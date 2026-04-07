@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>LX XITERS - Panel Revendedor</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    :root{
+      --gold1:#ffd700;
+      --gold2:#ffbf00;
+      --gold3:#ff9800;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,0.68);
+      --line:rgba(255,215,0,0.16);
+      --card:rgba(255,255,255,0.04);
+      --success:#57ff97;
+      --danger:#ff6c6c;
+    }
+
+    html, body{
+      min-height:100%;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255,215,0,0.10), transparent 30%),
+        radial-gradient(circle at bottom, rgba(255,153,0,0.08), transparent 30%),
+        linear-gradient(135deg,#000 0%, #070707 35%, #0d0d0d 100%);
+      color:var(--text);
+    }
+
+    .bg-orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(75px);
+      opacity:.14;
+      z-index:0;
+      pointer-events:none;
+    }
+
+    .orb-1{
+      width:220px;
+      height:220px;
+      background:var(--gold1);
+      top:40px;
+      left:10px;
+    }
+
+    .orb-2{
+      width:220px;
+      height:220px;
+      background:var(--gold3);
+      bottom:40px;
+      right:10px;
+    }
+
+    .app{
+      display:flex;
+      min-height:100vh;
+      position:relative;
+      z-index:1;
+    }
+
+    .sidebar{
+      width:250px;
+      background:rgba(0,0,0,0.58);
+      border-right:1px solid var(--line);
+      backdrop-filter:blur(16px);
+      padding:18px 14px;
+      position:fixed;
+      top:0;
+      left:0;
+      height:100vh;
+      z-index:30;
+      transition:.25s ease;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:22px;
+    }
+
+    .brand-logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid rgba(255,215,0,0.25);
+      box-shadow:0 0 12px rgba(255,215,0,0.12);
+    }
+
+    .brand h1{
+      font-family:'Orbitron',sans-serif;
+      font-size:18px;
+      color:var(--gold1);
+      letter-spacing:1px;
+    }
+
+    .brand p{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+
+    .menu-btn{
+      min-height:50px;
+      border:none;
+      border-radius:16px;
+      background:#151515;
+      color:#fff;
+      font-size:14px;
+      font-weight:600;
+      text-align:left;
+      padding:0 14px;
+      cursor:pointer;
+      box-shadow:inset 0 0 0 1px rgba(255,215,0,0.08);
+      transition:.22s ease;
+    }
+
+    .menu-btn.active{
+      background:linear-gradient(90deg,var(--gold1),var(--gold2),var(--gold3));
+      color:#111;
+      box-shadow:0 8px 18px rgba(255,191,0,0.18);
+    }
+
+    .sidebar-footer{
+      padding-top:14px;
+      border-top:1px solid rgba(255,215,0,0.08);
+    }
+
+    .sidebar-footer p{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.55;
+    }
+
+    .mini-chip{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      color:#111;
+      background:linear-gradient(90deg,var(--gold1),var(--gold2));
+    }
+
+    .logout-btn{
+      width:100%;
+      margin-top:12px;
+    }
+
+    .content{
+      margin-left:250px;
+      width:calc(100% - 250px);
+      padding:18px;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+      padding:12px 0 16px;
+      background:linear-gradient(to bottom, rgba(6,6,6,0.92), rgba(6,6,6,0.78), rgba(6,6,6,0));
+      backdrop-filter:blur(8px);
+    }
+
+    .topbar-left,
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .topbar-right{
+      gap:8px;
+    }
+
+    .top-pill{
+      min-height:38px;
+      padding:0 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      border-radius:12px;
+      background:#161616;
+      color:var(--gold1);
+      font-size:12px;
+      font-weight:700;
+      box-shadow:inset 0 0 0 1px rgba(255,215,0,0.10);
+    }
+
+    .balance-pill strong{
+      color:#111;
+      background:linear-gradient(90deg,var(--gold1),var(--gold2));
+      min-width:24px;
+      height:22px;
+      padding:0 8px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+    }
+
+    .hamburger{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:12px;
+      background:#181818;
+      color:var(--gold1);
+      font-size:18px;
+      box-shadow:inset 0 0 0 1px rgba(255,215,0,0.12);
+      flex-shrink:0;
+    }
+
+    .topbar h2{
+      font-family:'Orbitron',sans-serif;
+      font-size:22px;
+      color:var(--gold1);
+    }
+
+    .topbar p{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:2px;
+    }
+
+    .panel-section{
+      display:none;
+    }
+
+    .panel-section.active{
+      display:block;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .stat-card, .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      backdrop-filter:blur(14px);
+      box-shadow:
+        0 0 0 1px rgba(255,215,0,0.04) inset,
+        0 10px 26px rgba(0,0,0,0.34);
+    }
+
+    .stat-card{
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .stat-card span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:8px;
+    }
+
+    .stat-card strong{
+      font-family:'Orbitron',sans-serif;
+      font-size:24px;
+      color:var(--gold1);
+    }
+
+    .card{
+      border-radius:24px;
+      padding:18px;
+    }
+
+    .card-header{
+      margin-bottom:16px;
+    }
+
+    .card-header.between{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .card-header h3{
+      font-size:18px;
+      color:var(--gold1);
+    }
+
+    .info-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .info-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      background:#101010;
+      border-radius:14px;
+      border:1px solid rgba(255,215,0,0.08);
+    }
+
+    .info-row span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .info-row strong{
+      color:#fff;
+      font-size:13px;
+      text-align:right;
+    }
+
+    .small-btn,
+    .main-btn,
+    .buy-btn,
+    .logout-btn{
+      border:none;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .small-btn{
+      min-width:88px;
+      min-height:42px;
+      border-radius:14px;
+      padding:0 14px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .main-btn{
+      width:100%;
+      min-height:50px;
+      border-radius:16px;
+      font-family:'Orbitron',sans-serif;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:1px;
+    }
+
+    .gold{
+      background:linear-gradient(135deg,#ffe66a 0%, #ffd700 25%, #ffbf00 60%, #ff9800 100%);
+      color:#111;
+      box-shadow:
+        0 10px 24px rgba(255,191,0,0.22),
+        0 0 18px rgba(255,215,0,0.14),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+
+    .dark{
+      background:linear-gradient(180deg,#1b1b1b 0%, #131313 100%);
+      color:var(--gold1);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,215,0,0.14),
+        0 8px 18px rgba(0,0,0,0.20);
+    }
+
+    .keys-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .key-item{
+      background:#101010;
+      border:1px solid rgba(255,215,0,0.10);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .key-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .key-code{
+      font-family:'Orbitron',sans-serif;
+      font-size:13px;
+      color:#fff;
+      word-break:break-all;
+    }
+
+    .badge{
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .badge.active{
+      background:rgba(72,255,136,0.12);
+      color:var(--success);
+    }
+
+    .badge.inactive{
+      background:rgba(255,94,94,0.12);
+      color:var(--danger);
+    }
+
+    .key-meta{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+    }
+
+    .key-actions{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .key-actions button{
+      min-height:42px;
+      border:none;
+      border-radius:13px;
+      background:linear-gradient(180deg,#1c1c1c 0%, #131313 100%);
+      color:var(--gold1);
+      font-size:11px;
+      font-weight:700;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,215,0,0.10),
+        0 8px 16px rgba(0,0,0,0.18);
+    }
+
+    .empty-box{
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
+      background:#101010;
+      border-radius:16px;
+    }
+
+    .toast-wrap{
+      position:fixed;
+      top:10px;
+      right:10px;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      width:170px;
+      max-width:170px;
+      pointer-events:none;
+    }
+
+    .toast{
+      position:relative;
+      overflow:hidden;
+      padding:8px 10px 8px;
+      border-radius:13px;
+      backdrop-filter:blur(12px);
+      background:linear-gradient(180deg, rgba(20,20,20,0.96), rgba(10,10,10,0.96));
+      border:1px solid rgba(255,215,0,0.12);
+      box-shadow:
+        0 8px 16px rgba(0,0,0,0.26),
+        0 0 10px rgba(255,191,0,0.06);
+      transform:translateX(120%);
+      opacity:0;
+      animation:toastIn .30s ease forwards;
+    }
+
+    .toast.hide{
+      animation:toastOut .30s ease forwards;
+    }
+
+    .toast::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      width:2px;
+      height:100%;
+      background:linear-gradient(180deg,#ffd700,#ff9800);
+    }
+
+    .toast-title{
+      font-family:'Orbitron',sans-serif;
+      font-size:9px;
+      letter-spacing:.5px;
+      color:var(--gold1);
+      margin-bottom:2px;
+    }
+
+    .toast-text{
+      color:rgba(255,255,255,0.82);
+      font-size:9px;
+      line-height:1.25;
+      word-break:break-word;
+    }
+
+    .toast.success::before{
+      background:linear-gradient(180deg,#5dff9b,#17d96c);
+    }
+
+    .toast.error::before{
+      background:linear-gradient(180deg,#ff8585,#ff4d4d);
+    }
+
+    @keyframes toastIn{
+      from{ transform:translateX(120%); opacity:0; }
+      to{ transform:translateX(0); opacity:1; }
+    }
+
+    @keyframes toastOut{
+      from{ transform:translateX(0); opacity:1; }
+      to{ transform:translateX(120%); opacity:0; }
+    }
+
+    @media (max-width:1000px){
+      .stats-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .grid-2{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:768px){
+      .sidebar{
+        transform:translateX(-100%);
+      }
+
+      .sidebar.show{
+        transform:translateX(0);
+      }
+
+      .content{
+        margin-left:0;
+        width:100%;
+      }
+
+      .topbar-right{
+        display:none;
+      }
+
+      .key-actions{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:560px){
+      .stats-grid{
+        grid-template-columns:1fr;
+      }
+
+      .info-row,
+      .key-top,
+      .card-header.between{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .info-row strong{
+        text-align:left;
+      }
+    }
+    .compact-balance,
+.price-pill{
+  min-height:42px;
+  padding:0 8px 0 10px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#151515 0%, #101010 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,215,0,0.12),
+    0 8px 18px rgba(0,0,0,0.18);
+}
+
+.balance-label{
+  font-size:11px;
+  color:rgba(255,255,255,.72);
+  font-weight:700;
+}
+
+.compact-balance strong,
+.price-pill strong{
+  min-width:28px;
+  height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(90deg,#ffd700,#ffbf00,#ff9800);
+  color:#111;
+  font-size:11px;
+  font-weight:900;
+  box-shadow:0 4px 10px rgba(255,191,0,.18);
+}
+.floating-balance{
+  position:fixed;
+  top:16px;
+  right:16px;
+  z-index:999;
+  min-width:126px;
+  height:54px;
+  padding:0 14px 0 10px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(135deg,#1a1a1a 0%, #101010 100%);
+  border:1px solid rgba(255,215,0,.14);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,215,0,.04);
+  backdrop-filter:blur(12px);
+}
+
+.floating-balance-icon{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#ffd700,#ff9800);
+  font-size:16px;
+  box-shadow:0 6px 12px rgba(255,191,0,.20);
+}
+
+.floating-balance-info{
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+
+.floating-balance-info span{
+  font-size:10px;
+  color:rgba(255,255,255,.62);
+  font-weight:700;
+}
+
+.floating-balance-info strong{
+  font-family:'Orbitron',sans-serif;
+  color:#ffd700;
+  font-size:14px;
+}
+
+@media (max-width:768px){
+  .floating-balance{
+    top:12px;
+    right:12px;
+    min-width:112px;
+    height:48px;
+    padding:0 12px 0 8px;
+  }
+
+  .floating-balance-icon{
+    width:30px;
+    height:30px;
+    font-size:14px;
+  }
+
+  .floating-balance-info strong{
+    font-size:12px;
+  }
+}
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  backdrop-filter:blur(5px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:9999;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s ease;
+}
+
+.modal-overlay.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-card{
+  width:100%;
+  max-width:360px;
+  border-radius:22px;
+  background:linear-gradient(180deg,#121212 0%, #0b0b0b 100%);
+  border:1px solid rgba(255,215,0,.14);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.40),
+    inset 0 0 0 1px rgba(255,215,0,.04);
+  transform:translateY(18px) scale(.92);
+  transition:.25s ease;
+}
+
+.modal-overlay.show .modal-card{
+  transform:translateY(0) scale(1);
+}
+
+.modal-card.mini{
+  max-width:300px;
+}
+
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 16px 12px;
+  border-bottom:1px solid rgba(255,215,0,.08);
+}
+
+.modal-head h3{
+  color:#ffd700;
+  font-size:18px;
+  font-family:'Orbitron',sans-serif;
+}
+
+.modal-close{
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:12px;
+  background:#1a1a1a;
+  color:#ffd700;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.modal-body{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.state-btn{
+  min-height:46px;
+  border:none;
+  border-radius:14px;
+  font-weight:800;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.state-btn.active{
+  background:rgba(87,255,151,.10);
+  color:#57ff97;
+  border:1px solid rgba(87,255,151,.18);
+}
+
+.state-btn.inactive{
+  background:rgba(255,108,108,.10);
+  color:#ff8b8b;
+  border:1px solid rgba(255,108,108,.18);
+}
+
+.state-btn.paused{
+  background:rgba(255,216,107,.10);
+  color:#ffd86b;
+  border:1px solid rgba(255,216,107,.18);
+}
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div id="loadingScreen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
+    <div style="padding:22px 26px;border-radius:20px;background:rgba(0,0,0,.45);border:1px solid rgba(255,215,0,.12);backdrop-filter:blur(14px);box-shadow:0 12px 28px rgba(0,0,0,.28);text-align:center;">
+      <div style="font-family:Orbitron,sans-serif;color:#ffd700;font-size:18px;margin-bottom:8px;">LX XITERS</div>
+      <div style="color:rgba(255,255,255,.72);font-size:13px;">Cargando panel...</div>
+    </div>
+  </div>
+
+  <div class="app" id="appPanel" style="display:none;">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <h1>LX XITERS</h1>
+          <p>Reseller Panel</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+  <button class="menu-btn active" data-section="dashboard">Dashboard</button>
+  <button class="menu-btn" data-section="addKey">Agregar Key</button>
+  <button class="menu-btn" data-section="manageKeys">Manage Keys</button>
+  <button class="menu-btn" data-section="profile">Mi Perfil</button>
+</nav>
+
+      <div class="sidebar-footer">
+        <div class="mini-chip">RESELLER</div>
+        <p>Tu saldo y tus accesos se administran desde el panel principal.</p>
+        <button class="small-btn dark logout-btn" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger">☰</button>
+          <div>
+            <h2 id="sectionTitle">Dashboard</h2>
+            <p id="sectionSubtitle">Resumen general de tu cuenta</p>
+          </div>
+        </div>
+
+        <div class="floating-balance" id="floatingBalance">
+  <div class="floating-balance-icon">💰</div>
+  <div class="floating-balance-info">
+    <span>Saldo</span>
+    <strong id="topBalance">...</strong>
+  </div>
+</div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section class="panel-section active" id="dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Saldo</span>
+            <strong id="statCredits">...</strong>
+          </div>
+
+          <div class="stat-card">
+            <span>Compras</span>
+            <strong id="statPurchases">0</strong>
+          </div>
+
+          <div class="stat-card">
+            <span>Keys activas</span>
+            <strong id="statActiveKeys">0</strong>
+          </div>
+
+          <div class="stat-card">
+            <span>Estado</span>
+            <strong id="statStatus">Activo</strong>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <h3>Mi Cuenta</h3>
+            </div>
+
+            <div class="info-list">
+              <div class="info-row">
+                <span>Usuario</span>
+                <strong id="infoUser">-</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Registro</span>
+                <strong id="infoRegister">-</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Vence</span>
+                <strong id="infoValid">-</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Admin</span>
+                <strong id="infoAdmin">LX Diego</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Información</h3>
+            </div>
+
+            <div class="info-list">
+              <div class="info-row">
+                <span>Tipo</span>
+                <strong>Revendedor</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Saldo</span>
+                <strong id="infoCredits">...</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Estado</span>
+                <strong id="infoStatus">Activo</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Panel</span>
+                <strong>Premium</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+     <section class="panel-section" id="addKey">
+  <div class="card">
+    <div class="card-header">
+      <h3>Agregar Key</h3>
+    </div>
+
+    <div class="info-list">
+      <div class="info-row">
+  <span>Prefijo</span>
+  <strong id="fixedPrefixText">LxXiters</strong>
+</div>
+
+      <div class="info-row">
+        <span>Duración</span>
+        <strong>
+          <select id="keyDuration" style="width:160px;height:38px;background:#0d0d0d;border:none;border-radius:10px;color:#fff;padding:0 10px;">
+  <option value="1 Día">1 Día - 5 créditos</option>
+  <option value="7 Días">7 Días - 20 créditos</option>
+  <option value="15 Días">15 Días - 35 créditos</option>
+  <option value="30 Días">30 Días - 50 créditos</option>
+</select>
+        </strong>
+      </div>
+
+      <div class="info-row">
+        <span>Dispositivos</span>
+        <strong>
+          <select id="keyDevices" style="width:160px;height:38px;background:#0d0d0d;border:none;border-radius:10px;color:#fff;padding:0 10px;">
+            <option value="1">1 Dispositivo</option>
+            <option value="2">2 Dispositivos</option>
+            
+          </select>
+        </strong>
+      </div>
+
+      <div class="info-row">
+        <span>Estado</span>
+        <strong>
+          <select id="keyStatus" style="width:160px;height:38px;background:#0d0d0d;border:none;border-radius:10px;color:#fff;padding:0 10px;">
+            <option value="activa">Activa</option>
+            <option value="inactiva">Inactiva</option>
+            <option value="pausada">Pausada</option>
+          </select>
+        </strong>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+  <button class="main-btn gold" id="createKeyBtn">GENERAR KEY - 5 CRÉDITOS</button>
+</div>
+
+<div style="margin-top:10px;color:#ffd700;font-weight:700;font-size:13px;" id="localKeyPrice">
+  Precio actual: 5 créditos
+</div>
+
+<div style="margin-top:14px;" class="key-item">
+      <div class="key-top">
+        <div class="key-code" id="lastCreatedKey">Sin generar</div>
+        <div class="badge active">Nueva</div>
+      </div>
+      <div class="key-meta">
+        Aquí se mostrará la última key creada.
+      </div>
+    </div>
+  </div>
+</section>
+     
+<section class="panel-section" id="manageKeys">
+  <div class="card">
+    <div class="card-header between">
+      <h3>Manage Keys</h3>
+      <button class="small-btn dark" id="reloadKeysBtn">Recargar</button>
+    </div>
+
+    <div class="keys-list" id="keysList">
+      <div class="empty-box">Todavía no hay keys creadas.</div>
+    </div>
+  </div>
+</section>
+
+      <!-- PERFIL -->
+      <section class="panel-section" id="profile">
+        <div class="card">
+          <div class="card-header">
+            <h3>Mi Perfil</h3>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>Usuario</span>
+              <strong id="profileUser">-</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Créditos</span>
+              <strong id="profileCredits">...</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Registro</span>
+              <strong id="profileRegister">-</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Vence</span>
+              <strong id="profileValid">-</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Status</span>
+              <strong id="profileStatus">Activo</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Admin</span>
+              <strong id="profileAdmin">LX Diego</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="statusModal">
+    <div class="modal-card mini">
+      <div class="modal-head">
+        <h3>Cambiar estado</h3>
+        <button class="modal-close" onclick="closeStatusModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <button class="state-btn active" onclick="applyStatusChange('activa')">Activa</button>
+        <button class="state-btn inactive" onclick="applyStatusChange('inactiva')">Inactiva</button>
+        <button class="state-btn paused" onclick="applyStatusChange('pausada')">Pausada</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Editar Key</h3>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field">
+          <label>Nueva duración</label>
+          <select id="editDuration" style="width:100%;height:44px;background:#0d0d0d;border:none;border-radius:12px;color:#fff;padding:0 12px;">
+            <option value="1 Día">1 Día</option>
+            <option value="7 Días">7 Días</option>
+            <option value="15 Días">15 Días</option>
+            <option value="30 Días">30 Días</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Dispositivos</label>
+          <select id="editDevices" style="width:100%;height:44px;background:#0d0d0d;border:none;border-radius:12px;color:#fff;padding:0 12px;">
+            <option value="1">1 Dispositivo</option>
+            <option value="2">2 Dispositivos</option>
+            
+          </select>
+        </div>
+
+        <div id="editCostBox" style="background:#111;border:1px solid rgba(255,215,0,.10);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+  <div style="display:flex;justify-content:space-between;gap:10px;">
+    <span style="color:rgba(255,255,255,.68);font-size:12px;">Costo actual</span>
+    <strong id="editOldCostText" style="color:#fff;font-size:12px;">0 créditos</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:10px;">
+    <span style="color:rgba(255,255,255,.68);font-size:12px;">Costo nuevo</span>
+    <strong id="editNewCostText" style="color:#ffd700;font-size:12px;">0 créditos</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:10px;">
+    <span style="color:rgba(255,255,255,.68);font-size:12px;">Diferencia</span>
+    <strong id="editDiffCostText" style="color:#57ff97;font-size:12px;">0 créditos</strong>
+  </div>
+</div>
+
+<button class="main-btn gold" id="saveEditBtn">GUARDAR CAMBIOS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="noBalanceModal">
+  <div class="modal-card mini">
+    <div class="modal-head">
+      <h3>Saldo insuficiente</h3>
+      <button class="modal-close" onclick="closeNoBalanceModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div style="color:rgba(255,255,255,.78);font-size:13px;line-height:1.6;">
+        No tienes créditos suficientes para crear esta key.
+        <br><br>
+        Presiona abajo para <b style="color:#ffd700;">recargar saldo</b>.
+      </div>
+
+
+
+      <button class="main-btn gold" id="goRechargeBtn">RECARGAR SALDO</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA74DCIkgU8UTPp8YfBXCd1jodxZyPaHog",
+      authDomain: "lx-xiters-web-1d853.firebaseapp.com",
+      databaseURL: "https://lx-xiters-web-default-rtdb.firebaseio.com",
+      projectId: "lx-xiters-web-1d853",
+      storageBucket: "lx-xiters-web-1d853.firebasestorage.app",
+      messagingSenderId: "209933531654",
+      appId: "1:209933531654:web:31b70f82f5cc88afc32187",
+      measurementId: "G-XH12J8PR7E"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const sections = document.querySelectorAll(".panel-section");
+    const menuButtons = document.querySelectorAll(".menu-btn");
+    const sectionTitle = document.getElementById("sectionTitle");
+    const sectionSubtitle = document.getElementById("sectionSubtitle");
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
+    const liveClock = document.getElementById("liveClock");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const reloadKeysBtn = document.getElementById("reloadKeysBtn");
+
+    const titles = {
+  dashboard: {
+    title: "Dashboard",
+    subtitle: "Resumen general de tu cuenta"
+  },
+  addKey: {
+    title: "Agregar Key",
+    subtitle: "Crea nuevas keys para tus clientes"
+  },
+  manageKeys: {
+    title: "Manage Keys",
+    subtitle: "Edita, elimina, pausa o activa tus keys"
+  },
+  profile: {
+    title: "Mi Perfil",
+    subtitle: "Información de tu cuenta revendedor"
+  }
+};
+
+    const PRICE_MAP = {
+      "1 Día": 5,
+      "7 Días": 20,
+      "15 Días": 35,
+      "30 Días": 50
+    };
+
+    let currentUser = null;
+    let currentReseller = null;
+    let allKeys = [];
+    let myPurchasedKeys = [];
+
+    function showToast(title, text, type = "info") {
+      const wrap = document.getElementById("toastWrap");
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-title">${title}</div>
+        <div class="toast-text">${text}</div>
+      `;
+      wrap.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("hide");
+        setTimeout(() => toast.remove(), 300);
+      }, 2200);
+    }
+
+    function formatDate(value){
+      if(!value) return "No definido";
+
+      const date = new Date(value);
+      if(isNaN(date.getTime())) return String(value);
+
+      return date.toLocaleString();
+    }
+
+    function getDurationPrice(duration){
+      return PRICE_MAP[duration] || 0;
+    }
+
+    function isKeyActive(item){
+      if(!item || !item.duration) return false;
+      if(item.duration === "Ilimitada") return true;
+      if(!item.soldAt) return false;
+
+      const soldDate = new Date(item.soldAt);
+      if(isNaN(soldDate.getTime())) return false;
+
+      const expiration = new Date(soldDate);
+
+      if(item.duration === "1 Día") expiration.setDate(expiration.getDate() + 1);
+      if(item.duration === "7 Días") expiration.setDate(expiration.getDate() + 7);
+      if(item.duration === "15 Días") expiration.setDate(expiration.getDate() + 15);
+      if(item.duration === "30 Días") expiration.setDate(expiration.getDate() + 30);
+
+      return Date.now() < expiration.getTime();
+    }
+
+    function showSection(id) {
+      sections.forEach(section => section.classList.remove("active"));
+      menuButtons.forEach(btn => btn.classList.remove("active"));
+
+      const targetSection = document.getElementById(id);
+      const targetBtn = document.querySelector(`.menu-btn[data-section="${id}"]`);
+
+      if (targetSection) targetSection.classList.add("active");
+      if (targetBtn) targetBtn.classList.add("active");
+
+      if (titles[id]) {
+        sectionTitle.textContent = titles[id].title;
+        sectionSubtitle.textContent = titles[id].subtitle;
+      }
+
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove("show");
+      }
+    }
+
+    menuButtons.forEach(btn => {
+      btn.addEventListener("click", () => showSection(btn.dataset.section));
+    });
+
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.toggle("show");
+    });
+
+    function startClock() {
+  if (!liveClock) return;
+
+  function updateClock() {
+    const now = new Date();
+    liveClock.textContent = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+    function updateDashboard() {
+      if(!currentReseller) return;
+
+      const credits = Number(currentReseller.credits || 0);
+      const purchases = myPurchasedKeys.length;
+      const activeKeys = myPurchasedKeys.filter(isKeyActive).length;
+      const statusText =
+  currentReseller.status === "inactive" || currentReseller.status === false
+    ? "Inactivo"
+    : currentReseller.status === "paused"
+      ? "Pausado"
+      : "Activo";
+
+      document.getElementById("topBalance").textContent = "$" + credits;
+      document.getElementById("statCredits").textContent = credits;
+      document.getElementById("statPurchases").textContent = purchases;
+      document.getElementById("statActiveKeys").textContent = activeKeys;
+      document.getElementById("statStatus").textContent = statusText;
+
+      document.getElementById("infoUser").textContent = currentReseller.username || "-";
+      document.getElementById("infoRegister").textContent = formatDate(currentReseller.firstLoginAt || currentReseller.createdAt);
+      document.getElementById("infoValid").textContent = formatDate(currentReseller.validUntil);
+      document.getElementById("infoAdmin").textContent = currentReseller.seller || "LX Diego";
+      document.getElementById("infoCredits").textContent = credits;
+      document.getElementById("infoStatus").textContent = statusText;
+
+      document.getElementById("profileUser").textContent = currentReseller.username || "-";
+      document.getElementById("profileCredits").textContent = credits;
+      document.getElementById("profileRegister").textContent = formatDate(currentReseller.firstLoginAt || currentReseller.createdAt);
+      document.getElementById("profileValid").textContent = formatDate(currentReseller.validUntil);
+      document.getElementById("profileStatus").textContent = statusText;
+      document.getElementById("profileAdmin").textContent = currentReseller.seller || "LX Diego";
+    }
+
+    function loadResellerData() {
+  const resellerRef = ref(db, "resellers/" + currentUser);
+
+  onValue(resellerRef, (snap) => {
+    if(!snap.exists()){
+      showToast("ERROR", "Tu cuenta no existe.", "error");
+      localStorage.removeItem("user");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 800);
+      return;
+    }
+
+    currentReseller = snap.val();
+
+    if(currentReseller.status === false || currentReseller.status === "inactive"){
+      showToast("ERROR", "Tu cuenta está inactiva.", "error");
+    }
+
+    updateDashboard();
+
+    const loadingScreen = document.getElementById("loadingScreen");
+    const appPanel = document.getElementById("appPanel");
+
+    if (loadingScreen) loadingScreen.style.display = "none";
+    if (appPanel) appPanel.style.display = "flex";
+  }, (error) => {
+    console.error("Error onValue reseller:", error);
+    showToast("ERROR", "No se pudo cargar tu cuenta.", "error");
+  });
+}
+
+    function loadKeys() {
+  const keysRef = ref(db, "keys");
+
+  onValue(keysRef, (snap) => {
+    allKeys = [];
+    myPurchasedKeys = [];
+
+    if(snap.exists()){
+      const data = snap.val();
+
+      Object.keys(data).forEach(keyId => {
+        const item = data[keyId];
+        const keyObj = {
+          key: item.key || keyId,
+          status: item.status || "activa",
+          duration: item.duration || "",
+          assignedTo: item.assignedTo || "",
+          sold: !!item.sold,
+          soldTo: item.soldTo || "",
+          soldAt: item.soldAt || null,
+          deviceLimit: Number(item.deviceLimit || 1),
+          createdAt: item.createdAt || null,
+          createdBy: item.createdBy || "",
+          deleted: !!item.deleted
+        };
+
+        allKeys.push(keyObj);
+
+        if(keyObj.soldTo === currentUser){
+          myPurchasedKeys.push(keyObj);
+        }
+      });
+    }
+
+    renderAvailableKeys();
+    updateDashboard();
+  });
+}
+
+    function renderAvailableKeys() {
+  const keysList = document.getElementById("keysList");
+
+  const available = allKeys.filter(item => {
+    return !item.deleted && item.createdBy === currentUser;
+  });
+
+  if(!available.length){
+    keysList.innerHTML = `<div class="empty-box">Todavía no hay keys creadas.</div>`;
+    return;
+  }
+
+  keysList.innerHTML = available.map(item => {
+    const deviceText = item.deviceLimit + " dispositivo(s)";
+const itemCost = getKeyCost(item.duration, item.deviceLimit);
+
+    let badgeClass = "active";
+    if(item.status === "inactiva") badgeClass = "inactive";
+    if(item.status === "pausada") badgeClass = "inactive";
+
+    return `
+      <div class="key-item">
+        <div class="key-top">
+          <div class="key-code">${item.key}</div>
+          <div class="badge ${badgeClass}">${item.status}</div>
+        </div>
+
+        <div class="key-meta">
+  Duración: ${item.duration || "-"}<br>
+  Dispositivos: ${deviceText}<br>
+  Costo: ${itemCost} créditos<br>
+  Creada: ${formatDate(item.createdAt)}<br>
+  Vendida: ${item.sold ? "Sí" : "No"}
+</div>
+
+        <div class="key-actions">
+          <button onclick="openEditModal('${item.key}')">Editar</button>
+<button onclick="openStatusModal('${item.key}')">Estado</button>
+          <button onclick="deleteKeyItem('${item.key}')">Eliminar</button>
+          <button onclick="copyKey('${item.key}')">Copiar</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+    window.copyKey = async function(key){
+      try{
+        await navigator.clipboard.writeText(key);
+        showToast("KEY", "Copiada", "success");
+      }catch(error){
+        showToast("ERROR", "No se pudo copiar.", "error");
+      }
+    };
+
+    window.buyKey = async function(keyId){
+      try{
+        if(!currentReseller){
+          showToast("ERROR", "No hay sesión activa.", "error");
+          return;
+        }
+
+        const item = allKeys.find(k => k.key === keyId);
+        if(!item){
+          showToast("ERROR", "Key no encontrada.", "error");
+          return;
+        }
+
+        if(item.sold || item.status !== "activa"){
+          showToast("ERROR", "La key ya no está disponible.", "error");
+          return;
+        }
+
+        const price = getDurationPrice(item.duration);
+        const currentCredits = Number(currentReseller.credits || 0);
+
+        if(currentCredits < price){
+          showToast("ERROR", "Saldo insuficiente.", "error");
+          return;
+        }
+
+        const newCredits = currentCredits - price;
+
+        await update(ref(db, "keys/" + item.key), {
+          sold: true,
+          soldTo: currentUser,
+          soldAt: new Date().toISOString(),
+          assignedTo: currentUser,
+          price: price
+        });
+
+        await update(ref(db, "resellers/" + currentUser), {
+          credits: newCredits
+        });
+
+        currentReseller.credits = newCredits;
+
+        showToast("COMPRA", `Descontado ${price} créditos`, "success");
+
+        await loadResellerData();
+        await loadKeys();
+      }catch(error){
+        console.error(error);
+        showToast("ERROR", "No se pudo comprar la key.", "error");
+      }
+    };
+    const createKeyBtn = document.getElementById("createKeyBtn");
+const keyDuration = document.getElementById("keyDuration");
+const keyDevices = document.getElementById("keyDevices");
+const keyStatus = document.getElementById("keyStatus");
+const lastCreatedKey = document.getElementById("lastCreatedKey");
+const localKeyPrice = document.getElementById("localKeyPrice");
+
+let currentStatusKey = null;
+let currentEditKey = null;
+
+const SUPPORT_WHATSAPP = "59162651282"; // <-- cambia esto por tu número
+const goRechargeBtn = document.getElementById("goRechargeBtn");
+
+const editDuration = document.getElementById("editDuration");
+const editDevices = document.getElementById("editDevices");
+const saveEditBtn = document.getElementById("saveEditBtn");
+const editOldCostText = document.getElementById("editOldCostText");
+const editNewCostText = document.getElementById("editNewCostText");
+const editDiffCostText = document.getElementById("editDiffCostText");
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    });
+
+    reloadKeysBtn.addEventListener("click", async () => {
+      await loadKeys();
+      showToast("KEYS", "Recargadas", "success");
+    });
+
+    async function initPanel() {
+      startClock();
+
+      currentUser = localStorage.getItem("user");
+
+      if(!currentUser){
+        window.location.href = "login.html";
+        return;
+      }
+
+      loadResellerData();
+loadKeys();
+updateCreateButtonText();
+    }
+    function randomKeyBody(length = 7) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+function generateKey(prefix = "LX") {
+  const cleanPrefix = prefix.trim() || "LX";
+  return `${cleanPrefix}-${randomKeyBody(7)}`;
+}
+
+async function createResellerKey() {
+  try {
+
+    const duration = keyDuration.value;
+const devices = Number(keyDevices.value || 1);
+const cost = getKeyCost(duration, devices);
+
+const currentCredits = Number(currentReseller.credits || 0);
+
+if(currentCredits < cost){
+  openNoBalanceModal();
+  return;
+}
+
+    // GENERAR KEY
+    const newKey = "LxXiters-" + randomKeyBody(5);
+
+    const payload = {
+  key: newKey,
+  duration: duration,
+  deviceLimit: Number(keyDevices.value),
+  status: keyStatus.value,
+  createdAt: new Date().toISOString(),
+  createdBy: currentUser,
+  sold: false,
+  used: false,
+  cost: cost
+};
+
+    // GUARDAR EN FIREBASE
+    await update(ref(db, "keys/" + newKey), payload);
+
+    // DESCONTAR CRÉDITOS
+    const newCredits = currentCredits - cost;
+
+await update(ref(db, "resellers/" + currentUser), {
+  credits: newCredits
+});
+
+currentReseller.credits = newCredits;
+
+document.getElementById("topBalance").textContent = "$" + newCredits;
+document.getElementById("statCredits").textContent = newCredits;
+document.getElementById("infoCredits").textContent = newCredits;
+document.getElementById("profileCredits").textContent = newCredits;
+
+    // MOSTRAR RESULTADO (AQUÍ MISMO)
+    lastCreatedKey.innerHTML = `
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <div style="font-family:Orbitron;color:#ffd700;font-size:18px;word-break:break-all;">${newKey}</div>
+    <div style="font-size:13px;color:#57ff97;font-weight:700;">Key generada correctamente</div>
+
+    <div style="display:flex;flex-direction:column;gap:6px;background:#121212;border:1px solid rgba(255,215,0,.08);padding:12px;border-radius:14px;">
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Duración</span><strong>${duration}</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Dispositivos</span><strong>${devices}</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Estado</span><strong>${keyStatus.value}</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Costo</span><strong>${cost} créditos</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Saldo restante</span><strong>$${newCredits}</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(255,255,255,.65)">Creada</span><strong>${formatDate(payload.createdAt)}</strong></div>
+    </div>
+
+    <button onclick="copyKey('${newKey}')" style="padding:10px 14px;border:none;border-radius:12px;background:linear-gradient(135deg,#ffd700,#ff9800);color:#111;font-weight:800;">
+      Copiar
+    </button>
+  </div>
+`;
+
+if (navigator.vibrate) {
+  navigator.vibrate(120);
+}
+    showToast("KEY", "Generada correctamente", "success");
+
+  } catch (error) {
+    console.error(error);
+    showToast("ERROR", "No se pudo crear la key", "error");
+  }
+}
+
+async function deleteKeyItem(keyId) {
+  try {
+    await update(ref(db, "keys/" + keyId), {
+      deleted: true
+    });
+    showToast("KEY", "Eliminada", "success");
+    await loadKeys();
+  } catch (error) {
+    console.error(error);
+    showToast("ERROR", "No se pudo eliminar.", "error");
+  }
+}
+
+function openStatusModal(keyId){
+  currentStatusKey = keyId;
+  document.getElementById("statusModal").classList.add("show");
+}
+
+function closeStatusModal(){
+  currentStatusKey = null;
+  document.getElementById("statusModal").classList.remove("show");
+}
+
+async function applyStatusChange(newStatus){
+  if(!currentStatusKey) return;
+
+  try{
+    await update(ref(db, "keys/" + currentStatusKey), {
+      status: newStatus
+    });
+
+    closeStatusModal();
+    showToast("KEY", "Estado actualizado", "success");
+    await loadKeys();
+  }catch(error){
+    console.error(error);
+    showToast("ERROR", "No se pudo actualizar estado.", "error");
+  }
+}
+function updateEditCostPreview(){
+  if(!currentEditKey) return;
+
+  const item = allKeys.find(k => k.key === currentEditKey);
+  if(!item) return;
+
+  const oldDuration = item.duration || "1 Día";
+  const oldDevices = Number(item.deviceLimit || 1);
+
+  const newDuration = editDuration.value;
+  const newDevices = Number(editDevices.value || 1);
+
+  const oldCost = getKeyCost(oldDuration, oldDevices);
+  const newCost = getKeyCost(newDuration, newDevices);
+  const diff = newCost - oldCost;
+
+  editOldCostText.textContent = `${oldCost} créditos`;
+  editNewCostText.textContent = `${newCost} créditos`;
+
+  if(diff > 0){
+    editDiffCostText.textContent = `+${diff} créditos`;
+    editDiffCostText.style.color = "#ffae00";
+  }else if(diff < 0){
+    editDiffCostText.textContent = `${diff} créditos`;
+    editDiffCostText.style.color = "#57ff97";
+  }else{
+    editDiffCostText.textContent = `0 créditos`;
+    editDiffCostText.style.color = "#ffffff";
+  }
+}
+function openEditModal(keyId){
+  const item = allKeys.find(k => k.key === keyId);
+  if(!item) return;
+
+  currentEditKey = keyId;
+  editDuration.value = item.duration || "1 Día";
+  editDevices.value = String(item.deviceLimit ?? 1);
+
+  updateEditCostPreview();
+document.getElementById("editModal").classList.add("show");
+}
+
+function closeEditModal(){
+  currentEditKey = null;
+  document.getElementById("editModal").classList.remove("show");
+}
+
+async function saveEditKey(){
+  if(!currentEditKey) return;
+
+  try{
+    const item = allKeys.find(k => k.key === currentEditKey);
+    if(!item){
+      showToast("ERROR", "Key no encontrada.", "error");
+      return;
+    }
+
+    const oldDuration = item.duration || "1 Día";
+    const oldDevices = Number(item.deviceLimit || 1);
+
+    const newDuration = editDuration.value;
+    const newDevices = Number(editDevices.value || 1);
+
+    const oldCost = getKeyCost(oldDuration, oldDevices);
+    const newCost = getKeyCost(newDuration, newDevices);
+    const extraCost = newCost - oldCost;
+
+    const currentCredits = Number(currentReseller.credits || 0);
+
+    if(extraCost > 0 && currentCredits < extraCost){
+      openNoBalanceModal();
+      return;
+    }
+
+    await update(ref(db, "keys/" + currentEditKey), {
+      duration: newDuration,
+      deviceLimit: newDevices
+    });
+
+    if(extraCost > 0){
+      const newCredits = currentCredits - extraCost;
+
+      await update(ref(db, "resellers/" + currentUser), {
+        credits: newCredits
+      });
+
+      currentReseller.credits = newCredits;
+      document.getElementById("topBalance").textContent = "$" + newCredits;
+      document.getElementById("statCredits").textContent = newCredits;
+      document.getElementById("infoCredits").textContent = newCredits;
+      document.getElementById("profileCredits").textContent = newCredits;
+
+      showToast("KEY", `Editada y descontado ${extraCost} créditos`, "success");
+    } else {
+      showToast("KEY", "Editada correctamente", "success");
+    }
+
+    closeEditModal();
+  }catch(error){
+    console.error(error);
+    showToast("ERROR", "No se pudo editar.", "error");
+  }
+}
+
+function openNoBalanceModal(){
+  document.getElementById("noBalanceModal").classList.add("show");
+}
+
+function closeNoBalanceModal(){
+  document.getElementById("noBalanceModal").classList.remove("show");
+}
+
+function goRechargeWhatsApp(){
+  const url = `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent("Hola, quiero recargar saldo para mi panel revendedor.")}`;
+  window.open(url, "_blank");
+}
+function getBaseKeyCost(duration){
+  if(duration === "1 Día") return 5;
+  if(duration === "7 Días") return 20;
+  if(duration === "15 Días") return 35;
+  if(duration === "30 Días") return 50;
+  return 0;
+}
+
+function getKeyCost(duration, deviceLimit = 1){
+  const base = getBaseKeyCost(duration);
+  const devices = Number(deviceLimit || 1);
+  return base * devices;
+}
+
+function updateCreateButtonText(){
+  const devices = Number(keyDevices.value || 1);
+  const cost = getKeyCost(keyDuration.value, devices);
+
+  createKeyBtn.textContent = `GENERAR KEY - ${cost} CRÉDITOS`;
+
+  if(localKeyPrice){
+    localKeyPrice.textContent = `Precio actual: ${cost} créditos`;
+  }
+
+  const topPrice = document.getElementById("topPrice");
+  if(topPrice){
+    topPrice.textContent = cost;
+  }
+}
+
+keyDuration.addEventListener("change", () => {
+  updateCreateButtonText();
+});
+
+keyDevices.addEventListener("change", () => {
+  updateCreateButtonText();
+});
+
+createKeyBtn.addEventListener("click", createResellerKey);
+saveEditBtn.addEventListener("click", saveEditKey);
+goRechargeBtn.addEventListener("click", goRechargeWhatsApp);
+
+editDuration.addEventListener("change", updateEditCostPreview);
+editDevices.addEventListener("change", updateEditCostPreview);
+
+document.getElementById("noBalanceModal").addEventListener("click", (e) => {
+  if (e.target.id === "noBalanceModal") {
+    closeNoBalanceModal();
+  }
+});
+
+window.deleteKeyItem = deleteKeyItem;
+window.openStatusModal = openStatusModal;
+window.closeStatusModal = closeStatusModal;
+window.applyStatusChange = applyStatusChange;
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+window.closeNoBalanceModal = closeNoBalanceModal;
+
+    initPanel();
+  </script>
+</body>
+</html>
